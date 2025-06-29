@@ -1,11 +1,16 @@
-"use client";
+import { SupabaseClient } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
 
-export default function AdminOrdersPage({ supabase }) {
-  const [orders, setOrders] = useState([]);
+interface AdminOrdersPageProps {
+  supabase: SupabaseClient;
+}
+
+export default function AdminOrdersPage({ supabase }: AdminOrdersPageProps) {
+  const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line
   }, []);
 
   async function fetchOrders() {
@@ -31,9 +36,9 @@ export default function AdminOrdersPage({ supabase }) {
     }
   }
 
-  async function handleDelete(id) {
-    const confirm = window.confirm("Yakin ingin menghapus order ini?");
-    if (!confirm) return;
+  async function handleDelete(id: number) {
+    const confirmDelete = window.confirm("Yakin ingin menghapus order ini?");
+    if (!confirmDelete) return;
 
     const { error } = await supabase
       .from('orders')
@@ -56,39 +61,39 @@ export default function AdminOrdersPage({ supabase }) {
           <table className="min-w-full">
             <thead>
               <tr>
-            <th className="px-3 py-2 text-center">Order ID</th>
-            <th className="px-3 py-2 text-center">User ID</th>
-            <th className="px-3 py-2 text-center">Username</th>
-            <th className="px-3 py-2 text-center">Game</th>
-            <th className="px-3 py-2 text-center">Diamond Package</th>
-            <th className="px-3 py-2 text-center">Status</th>
-            <th className="px-3 py-2 text-center">Tanggal</th>
-            <th className="px-3 py-2 text-center">Jenis Pembayaran</th>
-            <th className="px-3 py-2 text-center">Metode Pembayaran</th>
-            <th className="px-3 py-2 text-center">Aksi</th>
+                <th className="px-3 py-2 text-center">Order ID</th>
+                <th className="px-3 py-2 text-center">User ID</th>
+                <th className="px-3 py-2 text-center">Username</th>
+                <th className="px-3 py-2 text-center">Game</th>
+                <th className="px-3 py-2 text-center">Diamond Package</th>
+                <th className="px-3 py-2 text-center">Status</th>
+                <th className="px-3 py-2 text-center">Tanggal</th>
+                <th className="px-3 py-2 text-center">Jenis Pembayaran</th>
+                <th className="px-3 py-2 text-center">Metode Pembayaran</th>
+                <th className="px-3 py-2 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {orders.map(o => (
-          <tr key={o.id} className="border-b border-gray-700 text-center">
-            <td className="px-3 py-2">{o.id}</td>
-            <td className="px-3 py-2">{o.user_id}</td>
-            <td className="px-3 py-2">{o.username}</td>
-            <td className="px-3 py-2">{o.game_name}</td>
-            <td className="px-3 py-2">{o.diamond_package}</td>
-            <td className="px-3 py-2">{o.status || 'Pending'}</td>
-            <td className="px-3 py-2">{o.created_at?.slice(0, 10)}</td>
-            <td className="px-3 py-2">{o.payment_type}</td>
-            <td className="px-3 py-2">{o.payment_method}</td>
-            <td className="px-3 py-2">
-              <button
-                onClick={() => handleDelete(o.id)}
-                className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm"
-              >
-                Hapus
-              </button>
-            </td>
-          </tr>
+                <tr key={o.id} className="border-b border-gray-700 text-center">
+                  <td className="px-3 py-2">{o.id}</td>
+                  <td className="px-3 py-2">{o.user_id}</td>
+                  <td className="px-3 py-2">{o.username}</td>
+                  <td className="px-3 py-2">{o.game_name}</td>
+                  <td className="px-3 py-2">{o.diamond_package}</td>
+                  <td className="px-3 py-2">{o.status || 'Pending'}</td>
+                  <td className="px-3 py-2">{o.created_at?.slice(0, 10)}</td>
+                  <td className="px-3 py-2">{o.payment_type}</td>
+                  <td className="px-3 py-2">{o.payment_method}</td>
+                  <td className="px-3 py-2">
+                    <button
+                      onClick={() => handleDelete(o.id)}
+                      className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Hapus
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
