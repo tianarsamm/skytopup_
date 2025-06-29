@@ -41,13 +41,13 @@ export default function PaymentPage() {
     return `${h}:${m}:${s}`;
   };
 
-  const dummyVA = {
+  const dummyVA: Record<"BCA VA" | "BNI VA" | "BRI VA", string> = {
     "BCA VA": "123456789012",
     "BNI VA": "987654321098",
     "BRI VA": "456789123456",
   };
 
-  const dummyWallet = {
+  const dummyWallet: Record<"DANA" | "OVO" | "GoPay", string> = {
     DANA: "0812-3456-7890",
     OVO: "0821-9876-5432",
     GoPay: "0857-1234-5678",
@@ -65,11 +65,11 @@ export default function PaymentPage() {
         <p>Metode Pembayaran: <strong>{order.payment_method}</strong></p>
 
         {order.payment_type === "Bank Transfer" && (
-          <p>Nomor Virtual Account: <strong>{dummyVA[order.payment_method]}</strong></p>
+          <p>Nomor Virtual Account: <strong>{dummyVA[order.payment_method as keyof typeof dummyVA]}</strong></p>
         )}
 
         {order.payment_type === "E-Wallet" && (
-          <p>Transfer ke Nomor: <strong>{dummyWallet[order.payment_method]}</strong></p>
+          <p>Transfer ke Nomor: <strong>{dummyWallet[order.payment_method as keyof typeof dummyWallet]}</strong></p>
         )}
 
         {order.payment_type === "QRIS" && (
