@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Architype Aubette';
+  src: url('/fonts/ArchitypeAubette.woff2') format('woff2'),
+       url('/fonts/ArchitypeAubette.woff') format('woff'),
+       url('/fonts/ArchitypeAubette.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS (opsional) */
+html, body {
+  @apply bg-white text-black antialiased;
+}
+
+/* Jika mau pakai font Geist via Tailwind */
+.geist-sans {
+  font-family: var(--font-geist-sans);
+}
+.geist-mono {
+  font-family: var(--font-geist-mono);
+}
