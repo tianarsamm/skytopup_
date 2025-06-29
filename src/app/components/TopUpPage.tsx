@@ -1,11 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  'https://xxzpmjydzrjvbbifsywo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4enBtanlkenJqdmJiaWZzeXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxODgwOTAsImV4cCI6MjA2NTc2NDA5MH0.Q6-I9_rGESfndmeHuJcmSTCFZQVYfru8J148qKJeEsg'
-);
+import { SupabaseClient } from "@supabase/supabase-js";
 
 type Game = {
   id: string;
@@ -20,7 +15,7 @@ type DiamondPackage = {
   price: number;
 };
 
-const paymentOptions = {
+const paymentOptions: { [key: string]: string[] } = {
   "Bank Transfer": ["BCA VA", "BNI VA", "BRI VA"],
   "E-Wallet": ["DANA", "OVO", "GoPay"],
   QRIS: ["QRIS"],
@@ -104,7 +99,12 @@ const PaymentDetail = ({
   );
 };
 
-const TopUpPage = () => {
+interface TopUpPageProps {
+  supabase: SupabaseClient;
+  onBack?: () => void; // jika ingin tombol kembali ke beranda
+}
+
+const TopUpPage = ({ supabase, onBack }: TopUpPageProps) => {
   const [games, setGames] = useState<Game[]>([]);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [packages, setPackages] = useState<DiamondPackage[]>([]);

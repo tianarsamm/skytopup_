@@ -1,13 +1,30 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient, createClient } from '@supabase/supabase-js';
 
 const supabase = createClient('https://xxzpmjydzrjvbbifsywo.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4enBtanlkenJqdmJiaWZzeXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxODgwOTAsImV4cCI6MjA2NTc2NDA5MH0.Q6-I9_rGESfndmeHuJcmSTCFZQVYfru8J148qKJeEsg');
 
-const AdminProductsPage = () => {
-  const [games, setGames] = useState([]);
-  const [packages, setPackages] = useState([]);
-  const [newGame, setNewGame] = useState({ game_name: '', imageFile: undefined });
+type Game = {
+  id: string;
+  name: string;
+  image_url: string;
+};
+
+type DiamondPackage = {
+  id: string;
+  game_id: string;
+  package_name: string;
+  price: number;
+};
+
+interface AdminProductsPageProps {
+  supabase: SupabaseClient;
+}
+
+const AdminProductsPage = ({ supabase }: AdminProductsPageProps) => {
+  const [games, setGames] = useState<Game[]>([]);
+  const [packages, setPackages] = useState<DiamondPackage[]>([]);
+  const [newGame, setNewGame] = useState<{ game_name: string; imageFile: File | undefined }>({ game_name: '', imageFile: undefined });
   const [newPackage, setNewPackage] = useState({ game_id: '', package_name: '', price: '' });
   const [editPackage, setEditPackage] = useState({ id: '', package_name: '', price: '' });
   const [toastMessage, setToastMessage] = useState('');
@@ -17,7 +34,7 @@ const AdminProductsPage = () => {
     fetchPackages();
   }, []);
 
-  const showToast = (message) => {
+  const showToast = (message: string) => {
     setToastMessage(message);
     setTimeout(() => setToastMessage(''), 3000);
   };
@@ -37,7 +54,7 @@ const AdminProductsPage = () => {
       alert("Lengkapi nama game dan gambar!");
       return;
     }
-    const uniqueName = `${Date.now()}-${newGame.imageFile.name}`;
+    const uniqueName = `${Date.now()}-${newGame.imageFile!.name}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("games")
       .upload(`images/${uniqueName}`, newGame.imageFile);
@@ -63,7 +80,7 @@ const AdminProductsPage = () => {
     showToast("Package berhasil ditambahkan!");
   };
 
-  const deleteGame = async (id) => {
+  const deleteGame = async (id: string) => {
     const confirmDelete = window.confirm('Yakin ingin menghapus game ini beserta semua paketnya?');
     if (!confirmDelete) return;
 
@@ -74,7 +91,7 @@ const AdminProductsPage = () => {
     showToast("Game berhasil dihapus!");
   };
 
-  const deletePackage = async (id) => {
+  const deletePackage = async (id: string) => {
     const confirmDelete = confirm("Apakah Anda yakin ingin menghapus package ini?");
     if (!confirmDelete) return;
 
@@ -83,8 +100,8 @@ const AdminProductsPage = () => {
     showToast("Package berhasil dihapus!");
   };
 
-  const startEditPackage = (pkg) => {
-    setEditPackage({ id: pkg.id, package_name: pkg.package_name, price: pkg.price });
+  const startEditPackage = (pkg: DiamondPackage) => {
+    setEditPackage({ id: pkg.id, package_name: pkg.package_name, price: pkg.price.toString() });
   };
 
   const saveEditPackage = async () => {
@@ -118,7 +135,7 @@ const AdminProductsPage = () => {
         <input
           type="file"
           accept="image/*"
-          onChange={e => setNewGame({ ...newGame, imageFile: e.target.files?.[0] })}
+          onChange={e => setNewGame({ ...newGame, imageFile: e.target.files && e.target.files.length > 0 ? e.target.files[0] : undefined })}
           className="p-2 bg-gray-800 rounded"
         />
         <button onClick={addGame} className="col-span-2 bg-green-500 p-2 rounded hover:bg-red-500 hover:font-bold">Add Game</button>
